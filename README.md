@@ -1,4 +1,7 @@
 # OLEDDriver_STM32_HAL
+## 基本描述
+**此OLED驱动程序基于[江协科技](https://jiangxiekeji.com/tutorial/oled.html)OLED驱动编写**
+  
 基于HAL库使用硬件I2C+DMA的SSD1306的128*64OLED屏幕驱动程序。  
 A 128*64OLED screen driver for SSD1306 based on the HAL library using hardware I2C+DMA  
   
@@ -13,4 +16,4 @@ A 128*64OLED screen driver for SSD1306 based on the HAL library using hardware I
 * 4.字模数据中含有中文需要在  目标选项->C/C++选项卡 中的 “Misc Control”一栏中加入“--no-multibyte-chars”，此在OLED.h中也有提及  
 * 5.在使用非阻塞传输时，需要编辑的中断回调函数在 OLED.h文件中的末尾注释中提及直接复制即可  
   
-**本例程基于STM32H743VIT6编写  
+**本例程所用芯片：STM32H743VIT6  

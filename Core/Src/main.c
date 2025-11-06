@@ -111,8 +111,8 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		T_Start = HAL_GetTick();
-		//for(uint16_t i=0;i<512;i++)//×èÈûÊ½Ö¡ÂÊ²âÊÔ
-		while(frame != 4000)//·Ç×èÈûÊ½Ö¡ÂÊ²âÊÔ
+		//for(uint16_t i=0;i<512;i++)// é˜»å¡žå¼å¸§çŽ‡æµ‹è¯•
+		while(frame != 4000)// éžé˜»å¡žå¼å¸§çŽ‡æµ‹è¯•
 		{
 			OLED_Reverse();
 			OLED_Update();

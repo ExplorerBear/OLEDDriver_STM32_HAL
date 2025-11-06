@@ -3,7 +3,10 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdarg.h>
+
+extern uint16_t frame;
 
 uint8_t *SendByte_Addr;//µ¥´Î´«ÊäÒ»ĞĞµÄÊı¾İÊı×éµØÖ·£¬ÓÉmallocÉêÇë£¬´«ÊäÍê³É»Øµ÷º¯ÊıÊÍ·Å
 
@@ -11,7 +14,7 @@ uint8_t *SendByte_Addr;//µ¥´Î´«ÊäÒ»ĞĞµÄÊı¾İÊı×éµØÖ·£¬ÓÉmallocÉêÇë£¬´«ÊäÍê³É»Øµ÷º
 	*	PageNum[7::0]: [6::4]:µ±Ç°Ò³Ò³Êı£¬×îºóÒ»Ò³Ò³Êı[2::0] bit7£º¶ş´Î¸üĞÂ±êÖ¾Î»,bit4:¿ÕÏĞ
 	* OLED_state[7::0]: [6::0]: ¸üĞÂµÄÒ³µÄÆğÊ¼Î»ÖÃ£¨x£©£¬bit7: IT/DMA´«Êä±êÖ¾Î»
 	*/
-uint8_t PageNum=0,OLED_state=0,OLED_Width;
+volatile uint8_t PageNum=0,OLED_state=0,OLED_Width;
 
 
 /*********** Tool Function **********/
@@ -48,17 +51,16 @@ void OLED_WriteCommand(uint8_t Command)
   */
 void OLED_WriteData(uint8_t *Data, uint8_t Count)
 {
+	
 	uint8_t *Sendbyte;
 	Sendbyte = (uint8_t *)malloc((Count+1)*sizeof(uint8_t));
 	SendByte_Addr = Sendbyte;
 	*Sendbyte=0x40;
-	for(uint8_t i=0;i<Count;i++)
-	{
-		*(Sendbyte+1+i) = *(Data+i);
-	}
+	
+	memcpy(Sendbyte+1,Data,Count);
 	
 	#ifdef IIC_Mode_Blocking
-	HAL_I2C_Master_Transmit(&IIC,IIC_Addr,Sendbyte,Count+1,200);
+	HAL_I2C_Master_Transmit(&IIC,IIC_Addr,Sendbyte,Count+1,100);
 	free(Sendbyte);
 	#endif
 	
@@ -83,20 +85,21 @@ void OLED_Transmit_Datas(void)
 	static uint8_t PgEnd,Page,X;
 	X = OLED_state&0x7f;
 	PgEnd = PageNum & (0x07);
-	Page = (PageNum>>4) & 0x07;
+	Page = (PageNum>>4) & 0x0f;
 	if(Page<=PgEnd){
 		OLED_SetCursor(Page, X);
 		OLED_WriteData((OLED_DisplayBuf+(Page*128)), OLED_Width);
-		PageNum += (0x1<<4); 
-	}else
+		PageNum += (0x1<<4);
+	}
+	else
 	{
-		
-		if((((OLED_state>>7)&0X01) == 1) && ((PageNum>>7)&0X01) == 1)
+		frame++;
+		if((((OLED_state>>7)&0X01) == 1) && ((PageNum&0x08)>>3) == 1)
 		{
 			OLED_state &= 0x7f;
-			PageNum &= 0x7f;
+			PageNum &= 0xf7;
 			OLED_Update();
-		}else if((((OLED_state>>7)&0X01) == 1) && ((PageNum>>7)&0X01) == 0) OLED_state &= 0x7f;
+		}else if((((OLED_state>>7)&0X01) == 1) && ((PageNum&0x08)>>3) == 0) OLED_state &= 0x7f;
 		
 	}
 	
@@ -202,7 +205,7 @@ void OLED_Update(void)
 	#ifndef IIC_Mode_Blocking 
 	if(((OLED_state>>7)&0x01) == 1)//ÓÃÓÚÅĞ¶Ï¶ÔÆÁÄ»µÄË¢ĞÂÊÇ·ñÍê³É
 	{
-		PageNum = PageNum | (0x1<<7);//ÉèÖÃ×Ô¶¯ÖØË¢ĞÂ±êÖ¾Î»
+		PageNum = PageNum | (0x1<<3);//ÉèÖÃ×Ô¶¯ÖØË¢ĞÂ±êÖ¾Î»
 		return;
 	} 
 		
@@ -246,7 +249,7 @@ void OLED_UpdateArea(int16_t X, int16_t Y, uint8_t Width, uint8_t Height)
 	#ifndef IIC_Mode_Blocking
 	if(((OLED_state>>7)&0x01) == 1)
 	{
-		PageNum = PageNum | (0x1<<7);
+		PageNum = PageNum | (0x1<<3);
 		return;
 	}
 	OLED_state |= (0x1<<7);

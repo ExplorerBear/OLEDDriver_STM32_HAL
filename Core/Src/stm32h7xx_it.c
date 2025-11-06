@@ -266,13 +266,5 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 		free(SendByte_Addr);//单次传输一行数据完毕，释放此内存区域防止内存溢出
 		OLED_Transmit_Datas();
 	}
-	
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-	//OLED_Update();
-	//HAL_UART_Receive_IT(&huart1,OLED_DisplayBuf,1024);
-}
-
-/* USER CODE END 1 */

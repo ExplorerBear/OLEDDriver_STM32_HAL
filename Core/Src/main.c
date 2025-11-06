@@ -46,7 +46,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint16_t frame;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,12 +93,13 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 	OLED_Init();
-	
-	//
 	OLED_Test();
 	OLED_Update();
 	HAL_Delay(100);
+	OLED_Clear();
 	
+	uint32_t T_Start,T_End;
+	uint16_t FPS;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -109,10 +110,19 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		OLED_Clear();
-		OLED_ShowString(0,0,"Hello World!",OLED_8X16);
+		T_Start = HAL_GetTick();
+		//for(uint16_t i=0;i<512;i++)//×èÈûÊ½Ö¡ÂÊ²âÊÔ
+		while(frame != 4000)//·Ç×èÈûÊ½Ö¡ÂÊ²âÊÔ
+		{
+			OLED_Reverse();
+			OLED_Update();
+		}
+		T_End = HAL_GetTick();
+		HAL_Delay(100);
+		FPS = 4000/((T_End-T_Start)/1000.0000000);
+		OLED_ShowNum(0,0,FPS,4,OLED_8X16);
 		OLED_Update();
-		
+		while(1);
 	}
 	OLED_DeInit();
   /* USER CODE END 3 */

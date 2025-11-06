@@ -13,7 +13,7 @@
 
 #define IIC hi2c2	//Used IIC interface
 #define IIC_Addr 0x78	//Driver Addr
-#define IIC_Mode_Blocking	//IIC传输方式，阻塞/中断/DMA，按下面的三个选项
+#define IIC_Mode_DMA	//IIC传输方式，阻塞/中断/DMA，按下面的三个选项
 /** IIC Mode Type****
 
 	IIC_Mode_Blocking //阻塞方式

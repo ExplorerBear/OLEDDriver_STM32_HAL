@@ -477,6 +477,11 @@
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32h7xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>User.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\User.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

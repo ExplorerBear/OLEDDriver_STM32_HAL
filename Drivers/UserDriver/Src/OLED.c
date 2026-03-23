@@ -6,9 +6,9 @@
 #include <string.h>
 #include <stdarg.h>
 
-extern uint16_t frame;
+uint16_t frame;//帧数
 
-uint8_t *SendByte_Addr;//单次传输一行的数据数组地址，由malloc申请，传输完成回调函数释放
+uint8_t SendBytes[129];//单次传输一行的数据数组地址，由malloc申请，传输完成回调函数释放
 
 /**
 	*	PageNum[7::0]: [6::4]:当前页页数，最后一页页数[2::0] bit7：二次更新标志位,bit4:空闲
@@ -28,7 +28,7 @@ uint8_t OLED_IsInAngle(int16_t X, int16_t Y, int16_t StartAngle, int16_t EndAngl
   * 随后调用OLED_Update函数或OLED_UpdateArea函数
   * 才会将显存数组的数据发送到OLED硬件，进行显示
   */
-uint8_t *OLED_DisplayBuf;
+uint8_t OLED_DisplayBuf[1024];
 
 /*********** 通信部分 **********/
 /**
@@ -51,25 +51,20 @@ void OLED_WriteCommand(uint8_t Command)
   */
 void OLED_WriteData(uint8_t *Data, uint8_t Count)
 {
+	*SendBytes=0x40;
 	
-	uint8_t *Sendbyte;
-	Sendbyte = (uint8_t *)malloc((Count+1)*sizeof(uint8_t));
-	SendByte_Addr = Sendbyte;
-	*Sendbyte=0x40;
-	
-	memcpy(Sendbyte+1,Data,Count);
+	memcpy(SendBytes+1,Data,Count);
 	
 	#ifdef IIC_Mode_Blocking
-	HAL_I2C_Master_Transmit(&IIC,IIC_Addr,Sendbyte,Count+1,100);
-	free(Sendbyte);
+	HAL_I2C_Master_Transmit(&IIC,IIC_Addr,SendBytes,Count+1,100);
 	#endif
 	
 	#ifdef IIC_Mode_IT
-	HAL_I2C_Master_Transmit_IT(&IIC,IIC_Addr,Sendbyte,Count+1);
+	HAL_I2C_Master_Transmit_IT(&IIC,IIC_Addr,SendBytes,Count+1);
 	#endif
 	
 	#ifdef IIC_Mode_DMA
-	HAL_I2C_Master_Transmit_DMA(&IIC,IIC_Addr,Sendbyte,Count+1);
+	HAL_I2C_Master_Transmit_DMA(&IIC,IIC_Addr,SendBytes,Count+1);
 	#endif
 	
 }
@@ -119,7 +114,7 @@ void OLED_Transmit_Datas(void)
   */
 void OLED_Init(void)
 {
-	OLED_DisplayBuf = (uint8_t*)malloc(1024*sizeof(uint8_t));//为显存申请内存
+	
 	/*写入一系列的命令，对OLED进行初始化配置*/
 	OLED_WriteCommand(0xAE);	//设置显示开启/关闭，0xAE关闭，0xAF开启
 	
@@ -453,6 +448,7 @@ void OLED_ShowString(int16_t X, int16_t Y, char *String, uint8_t FontSize)
 	{
 		
 #ifdef OLED_CHARSET_UTF8						//定义字符集为UTF8
+		#warning "UTF8 is defined"
 		/*此段代码的目的是，提取UTF8字符串中的一个字符，转存到SingleChar子字符串中*/
 		/*判断UTF8编码第一个字节的标志位*/
 		if ((String[i] & 0x80) == 0x00)			//第一个字节为0xxxxxxx
@@ -499,6 +495,7 @@ void OLED_ShowString(int16_t X, int16_t Y, char *String, uint8_t FontSize)
 #endif
 		
 #ifdef OLED_CHARSET_GB2312						//定义字符集为GB2312
+		#warning "GB2312 is defined"
 		/*此段代码的目的是，提取GB2312字符串中的一个字符，转存到SingleChar子字符串中*/
 		/*判断GB2312字节的最高位标志位*/
 		if ((String[i] & 0x80) == 0x00)			//最高位为0

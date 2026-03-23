@@ -263,7 +263,6 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 	if(hi2c == &IIC)
 	{
-		free(SendByte_Addr);//单次传输一行数据完毕，释放此内存区域防止内存溢出
 		OLED_Transmit_Datas();
 	}
 }

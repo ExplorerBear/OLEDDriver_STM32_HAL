@@ -13,7 +13,7 @@
 
 #define IIC hi2c2	//Used IIC interface
 #define IIC_Addr 0x78	//Driver Addr
-#define IIC_Mode_DMA	//IIC传输方式，阻塞/中断/DMA，按下面的三个选项
+#define IIC_Mode_IT	//IIC传输方式，阻塞/中断/DMA，按下面的三个选项
 /** IIC Mode Type****
 
 	IIC_Mode_Blocking //阻塞方式
@@ -32,8 +32,9 @@
 #define OLED_FILLED				1
 
 /* 全局变量 */
-extern uint8_t *SendByte_Addr;//一个Page的数据指针
-extern uint8_t *OLED_DisplayBuf;//显存地址（如果需要则声明）
+extern uint16_t frame;
+//extern uint8_t SendByte_Addr[129];//一个Page的数据指针
+//extern uint8_t OLED_DisplayBuf[1024];//显存数组（如果需要则声明）
 
 /*********************参数宏定义*/
 

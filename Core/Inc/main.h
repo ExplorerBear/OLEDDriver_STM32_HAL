@@ -53,7 +53,9 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void Frame_Test(void);
+void Test_Jiangxie1(void);
+void Test_JiangXie2(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

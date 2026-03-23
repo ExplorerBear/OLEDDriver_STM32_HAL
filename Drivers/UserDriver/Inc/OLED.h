@@ -5,8 +5,8 @@
 #include "i2c.h"
 #include "OLED_Data.h"
 
-/** ÏîÄ¿ÅäÖÃ£ºĞèÒªÔÚÏîÄ¿Ñ¡ÏîÖĞ C/C++ -> Misc Control ÖĞÌí¼Ó "--no-multibyte-chars"£¬ÒÔÊÊÅäÖĞÎÄ¡£
-	* 					ÏÔ´æĞèÒª 1Kb µÄheap¿Õ¼ä£¬ÒÔ¼°·¢ËÍÊı¾İ»º³åÇø×î´óĞèÒª128BytesµÄHeap¿Õ¼ä£¬Òò´ËHeapÖÁÉÙĞèÒªÅäÖÃÎª0x480
+/** ÏîÄ¿ÅäÖÃ£ºĞèÒªÔÚÏîÄ¿Ñ¡ÏîÖĞ C/C++ -> Misc Control ÖĞÌí¼Ó "--no-multibyte-chars"£¬Ç¿ÖÆ±àÒëÆ÷ÒÔµ¥×Ö½Ú½âÎöÔ´Âë¡£
+	* 					
 	*/
 
 /*²ÎÊıºê¶¨Òå*********************/
@@ -19,8 +19,11 @@
 	IIC_Mode_Blocking //×èÈû·½Ê½
 	IIC_Mode_IT				//ÖĞ¶Ï·½Ê½
 	IIC_Mode_DMA			//DMA·½Ê½
+	£¡Ê¹ÓÃ·Ç×èÈû·½Ê½Òª¼ÓÈëÖĞ¶Ï»Øµ÷º¯Êı£¡
 */
 
+/* ·Ç×èÈûÊ½ÖĞ¶Ï·şÎñº¯Êı */
+void OLED_IIC_ISR(I2C_HandleTypeDef *hi2c);//Ê¹ÓÃÖĞ¶Ï»òÕßDMA·½Ê½Ê±£¬ÔÚÖĞ¶Ï»Øµ÷º¯ÊıÖĞµ÷ÓÃ´Ëº¯Êı
 
 /*FontSize²ÎÊıÈ¡Öµ*/
 /*´Ë²ÎÊıÖµ²»½öÓÃÓÚÅĞ¶Ï£¬¶øÇÒÓÃÓÚ¼ÆËãºáÏò×Ö·ûÆ«ÒÆ£¬Ä¬ÈÏÖµÎª×ÖÌåÏñËØ¿í¶È*/
@@ -76,17 +79,7 @@ void OLED_DrawCircle(int16_t X, int16_t Y, uint8_t Radius, uint8_t IsFilled);//»
 void OLED_DrawEllipse(int16_t X, int16_t Y, uint8_t A, uint8_t B, uint8_t IsFilled);//»æÖÆÍÖÔ²
 void OLED_DrawArc(int16_t X, int16_t Y, uint8_t Radius, int16_t StartAngle, int16_t EndAngle, uint8_t IsFilled);//»æÖÆÔ²»¡
 
-/** ÖĞ¶Ï/DMA Ä£Ê½ÏÂĞèÒªÅäÖÃµÄÖĞ¶Ï»Øµ÷º¯Êı 
-	*
-	* ËµÃ÷£º´Ë¶Î³ÌĞòÖ»Ğè½«Æä¸´ÖÆµ½ HAL_I2C_MasterTxCpltCallback() º¯ÊıÖĞ£¬¼´¿É			
-	*/
-/*
-	if(hi2c == &IIC)
-	{
-		free(SendByte_Addr);//µ¥´Î´«ÊäÒ»ĞĞÊı¾İÍê±Ï£¬ÊÍ·Å´ËÄÚ´æÇøÓò·ÀÖ¹ÄÚ´æÒç³ö
-		OLED_Transmit_Datas();
-	}
-*/
+
 
 
 #endif

@@ -261,9 +261,6 @@ void USART1_IRQHandler(void)
 
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-	if(hi2c == &IIC)
-	{
-		OLED_Transmit_Datas();
-	}
+	OLED_IIC_ISR(hi2c);//÷–∂œ¥¶¿Ì
 }
 

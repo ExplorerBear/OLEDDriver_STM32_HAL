@@ -16,12 +16,6 @@ uint8_t SendBytes[129];//µ¥´Î´«ÊäÒ»ĞĞµÄÊı¾İÊı×éµØÖ·£¬ÓÉmallocÉêÇë£¬´«ÊäÍê³É»Øµ÷º
 	*/
 volatile uint8_t PageNum=0,OLED_state=0,OLED_Width;
 
-
-/*********** Tool Function **********/
-uint32_t OLED_Pow(uint32_t X, uint32_t Y);
-uint8_t OLED_pnpoly(uint8_t nvert, int16_t *vertx, int16_t *verty, int16_t testx, int16_t testy);
-uint8_t OLED_IsInAngle(int16_t X, int16_t Y, int16_t StartAngle, int16_t EndAngle);
-
 /**
   * OLEDÏÔ´æÊı×éÖ¸Õë
   * ËùÓĞµÄÏÔÊ¾º¯Êı£¬¶¼Ö»ÊÇ¶Ô´ËÏÔ´æÊı×é½øĞĞ¶ÁĞ´
@@ -29,6 +23,24 @@ uint8_t OLED_IsInAngle(int16_t X, int16_t Y, int16_t StartAngle, int16_t EndAngl
   * ²Å»á½«ÏÔ´æÊı×éµÄÊı¾İ·¢ËÍµ½OLEDÓ²¼ş£¬½øĞĞÏÔÊ¾
   */
 uint8_t OLED_DisplayBuf[1024];
+
+
+/*********** Tool Function **********/
+uint32_t OLED_Pow(uint32_t X, uint32_t Y);
+uint8_t OLED_pnpoly(uint8_t nvert, int16_t *vertx, int16_t *verty, int16_t testx, int16_t testy);
+uint8_t OLED_IsInAngle(int16_t X, int16_t Y, int16_t StartAngle, int16_t EndAngle);
+
+/** ·Ç×èÈûÊ½ÖĞ¶Ï·şÎñº¯Êı 
+	* ²ÎÊı£ºIIC¾ä±úÖ¸Õë£¬Ö±½ÓÊ¹ÓÃ»Øµ÷º¯ÊıµÄĞÎ²Î¼´¿É
+*/
+
+void OLED_IIC_ISR(I2C_HandleTypeDef *hi2c)
+{
+	if(hi2c == &IIC)
+	{
+		OLED_Transmit_Datas();
+	}
+}
 
 /*********** Í¨ĞÅ²¿·Ö **********/
 /**
